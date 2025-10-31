@@ -21,14 +21,14 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - certificates:/certs:ro
-      - ./config/traefik:/etc/traefik:ro
-      - ./config/traefik/acme.json:/certificates/acme.json
+      - ./config/traefik/traefik.toml:/traefik.toml:ro
+      - ./config/certificates/acme.json:/acme.json:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.${DOMAIN}`)"
       - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
       - "traefik.http.routers.traefik-dashboard.service=api@internal"
-      - "traefik.http.routers.traefik-dashboard.tls.certresolver=lets-encrypt"
+      - "traefik.http.routers.traefik-dashboard.tls=true"
       - "traefik.http.middlewares.traefik-dashboard-auth.basicauth.users=admin:$$apr1$$Uazqzaux$$YDT/IZif09rWWybKr.QCg0"
       - "traefik.http.routers.traefik-dashboard.middlewares=traefik-dashboard-auth@docker"
       - "traefik.http.services.traefik-dashboard.loadbalancer.server.port=8080"
