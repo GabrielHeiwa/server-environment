@@ -25,6 +25,7 @@ services:
       - "--certificatesResolvers.lets-encrypt.acme.storage=/certificates/acme.json"
       - "--certificatesResolvers.lets-encrypt.acme.tlsChallenge=true"
       - "--serverstransport.insecureSkipVerify=true"
+      - "touch /certificates/acme.json && chmod 600 /certificates/acme.json"
     container_name: traefik
     restart: unless-stopped
     security_opt:
@@ -36,7 +37,7 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./config/certificates:/certificates
+      - certificates:/certificates
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.${DOMAIN}`)"
