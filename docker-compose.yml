@@ -9,6 +9,22 @@ volumes:
 services:
   traefik:
     image: traefik:v3.4
+    command: 
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entryPoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entryPoints.websecure.address=:443"
+      - "--api.insecure=false"
+      - "--api.dashboard=true"
+      - "--log.level=DEBUG"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=traefik-proxy"
+      - "--certificatesResolvers.lets-encrypt.acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
+      - "--certificatesResolvers.lets-encrypt.acme.email=${DOMAIN_EMAIL}"
+      - "--certificatesResolvers.lets-encrypt.acme.storage=/acme.json"
+      - "--certificatesResolvers.lets-encrypt.acme.tlsChallenge=true"
+      - "--serverstransport.insecureSkipVerify=true"
     container_name: traefik
     restart: unless-stopped
     security_opt:
@@ -20,7 +36,6 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./config/traefik/traefik.toml:/traefik.toml:ro
       - ./config/certificates/acme.json:/acme.json:ro
     labels:
       - "traefik.enable=true"
