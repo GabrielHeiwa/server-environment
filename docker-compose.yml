@@ -22,7 +22,7 @@ services:
       - "--providers.docker.network=traefik-proxy"
       - "--certificatesResolvers.lets-encrypt.acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
       - "--certificatesResolvers.lets-encrypt.acme.email=${DOMAIN_EMAIL}"
-      - "--certificatesResolvers.lets-encrypt.acme.storage=/acme.json"
+      - "--certificatesResolvers.lets-encrypt.acme.storage=/certificates/acme.json"
       - "--certificatesResolvers.lets-encrypt.acme.tlsChallenge=true"
       - "--serverstransport.insecureSkipVerify=true"
     container_name: traefik
@@ -36,7 +36,7 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./config/certificates/acme.json:/acme.json
+      - ./config/certificates:/certificates
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.${DOMAIN}`)"
